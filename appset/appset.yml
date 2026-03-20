@@ -1,0 +1,27 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: demo-appset
+spec:
+  generators:
+    - list:
+        elements:
+          - name: app1
+            namespace: app1
+          - name: app2
+            namespace: app2
+
+  template:
+    metadata:
+      name: '{{name}}'
+    spec:
+      project: default
+      source:
+        repoURL: https://github.com/srinu-1/argocd-poc-demo
+        targetRevision: HEAD
+        path: manifests/{{name}}
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: '{{namespace}}'
+      syncPolicy:
+        automated: {}
